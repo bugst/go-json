@@ -14,7 +14,7 @@ import (
 	"bytes"
 	"compress/gzip"
 	"fmt"
-	"internal/testenv"
+	"go.bug.st/json/internal/testenv"
 	"io/ioutil"
 	"os"
 	"reflect"
