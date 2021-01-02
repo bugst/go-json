@@ -727,6 +727,16 @@ type structFields struct {
 	nameIndex map[string]int
 }
 
+func (s *structFields) RequiredFields() map[string]bool {
+	res := map[string]bool{}
+	for _, field := range s.list {
+		if field.required {
+			res[field.name] = false
+		}
+	}
+	return res
+}
+
 func (se structEncoder) encode(e *encodeState, v reflect.Value, opts encOpts) {
 	next := byte('{')
 FieldLoop:
@@ -1153,6 +1163,7 @@ type field struct {
 	index     []int
 	typ       reflect.Type
 	omitEmpty bool
+	required  bool
 	quoted    bool
 
 	encoder encoderFunc
@@ -1269,6 +1280,7 @@ func typeFields(t reflect.Type) structFields {
 						index:     index,
 						typ:       ft,
 						omitEmpty: opts.Contains("omitempty"),
+						required:  opts.Contains("required"),
 						quoted:    quoted,
 					}
 					field.nameBytes = []byte(field.name)

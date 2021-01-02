@@ -624,6 +624,7 @@ func (d *decodeState) object(v reflect.Value) error {
 	}
 
 	var fields structFields
+	var requiredFields map[string]bool
 
 	// Check type of target:
 	//   struct or
@@ -649,6 +650,7 @@ func (d *decodeState) object(v reflect.Value) error {
 		}
 	case reflect.Struct:
 		fields = cachedTypeFields(t)
+		requiredFields = fields.RequiredFields()
 		// ok
 	default:
 		d.saveError(&UnmarshalTypeError{Value: "object", Type: t, Offset: int64(d.off)})
@@ -708,6 +710,7 @@ func (d *decodeState) object(v reflect.Value) error {
 				}
 			}
 			if f != nil {
+				requiredFields[f.name] = true
 				subv = v
 				destring = f.quoted
 				for _, i := range f.index {
@@ -824,6 +827,13 @@ func (d *decodeState) object(v reflect.Value) error {
 			panic(phasePanicMsg)
 		}
 	}
+
+	for field, processed := range requiredFields {
+		if !processed {
+			return fmt.Errorf("json: undefined required field %s into %v", field, v.Type())
+		}
+	}
+
 	return nil
 }
 
