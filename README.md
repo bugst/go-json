@@ -3,6 +3,8 @@
 
 This library is a drop-in replacement for golang's `encoding/json` (actually is a fork of it) that adds support for the "required" fields that is missing from upstream and it seems it's not going to happen soon: https://github.com/golang/go/issues/19858
 
+Should the upstream issue be solved, this library will be made obsolete and archived.
+
 ## Install
 
 Import `go.bug.st/json` instead of `encoding/json`.
